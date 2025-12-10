@@ -31,3 +31,4 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 
 # أمر تشغيل السيرفر
 CMD ["apache2-foreground"]
+RUN php artisan migrate --force
