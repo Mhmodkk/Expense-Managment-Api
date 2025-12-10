@@ -100,3 +100,8 @@ Route::middleware('auth:sanctum')->controller(DashboardController::class)->group
 
 });
 
+Route::get('/ping', function () {
+    return response()->json(['status' => 'ok']);
+});
+
+
