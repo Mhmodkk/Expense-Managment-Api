@@ -1,46 +1,42 @@
-FROM php:8.2-apache
-
-# تعطيل الـ MPM event وتفعيل prefork فقط
-RUN a2dismod mpm_event && a2enmod mpm_prefork
+FROM php:8.2-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    zip \
-    unzip \
     git \
+    curl \
+    unzip \
+    zip \
     libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
-    default-mysql-client
+    libzip-dev \
+    libsodium-dev \
+    default-mysql-client \
+    default-libmysqlclient-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip sodium
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql zip
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Enable Apache rewrite
-RUN a2enmod rewrite
+# NodeJS (اختياري)
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash \
+    && apt-get update \
+    && apt-get install -y nodejs
 
-# Apache document root
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# Copy project
-COPY . /var/www/html
 WORKDIR /var/www/html
 
-# Composer
-RUN curl -sS https://getcomposer.org/installer | php -- \
-    --install-dir=/usr/local/bin --filename=composer
+COPY . .
 
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Permissions
-RUN chmod -R 775 storage bootstrap/cache && \
-    chown -R www-data:www-data storage bootstrap/cache
+# إذا عندك Frontend مع Vite شغّل:
+# RUN npm install && npm run build
 
+EXPOSE 8000
 
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+# Laravel CMD
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
