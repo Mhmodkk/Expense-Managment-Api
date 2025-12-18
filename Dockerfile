@@ -25,4 +25,4 @@ RUN composer install --no-dev --optimize-autoloader
 # Node? مو لازم لأن مشروعك API وليس فيه frontend
 
 # هذا أهم بخطوة: Railway يعطيك PORT ويجب تمريره للـ serve
-CMD php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT}
+CMD php artisan migrate:fresh --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT}
