@@ -30,7 +30,7 @@ class AuthService
 
     public function login(object $request): ?User
     {
-        $user = User::where('email', $request->email)->FirstorFail();
+        $user = User::where('email', $request->email)->first();
         if ($user && Hash::check($request->password, $user->password)) {
             return $user;
         }
@@ -77,7 +77,7 @@ class AuthService
             'code' => $request->otp,
             'active' => 1,
             'type' => 'verification',
-        ])->FirstorFail();
+        ])->first();
 
         if (!$otp) {
             abort(422, __('app.invalid_otp'));
@@ -96,7 +96,7 @@ class AuthService
 
     public function getUserByEmail(string $email): User
     {
-        return User::where('email', $email)->FirstorFail();
+        return User::where('email', $email)->first();
     }
 
     public function resetPassword(User $user, object $request): User
@@ -108,7 +108,7 @@ class AuthService
             'code' => $request->otp,
             'active' => 1,
             'type' => 'password-reset',
-        ])->FirstorFail();
+        ])->first();
 
         if (!$otp) {
             abort(422, __('app.invalid_otp'));

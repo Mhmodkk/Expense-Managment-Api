@@ -26,7 +26,7 @@ class GoalService
 
     public function update(object $request, $id)
     {
-        $goal = Goal::where('id',$id)->where('user_id',Auth::id())->FirstOrFail();
+        $goal = Goal::where('id',$id)->where('user_id',Auth::id())->first();
 
         $goal->update([
             'name' => $request->name ?? $goal->name,
@@ -44,7 +44,7 @@ class GoalService
 
     public function delete( $id)
     {
-        $goal = Goal::where('id',$id)->where('user_id',Auth::id())->FirstorFail();
+        $goal = Goal::where('id',$id)->where('user_id',Auth::id())->first();
 
         $goal->delete();
         return true;

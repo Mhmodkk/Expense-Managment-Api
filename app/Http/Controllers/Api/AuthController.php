@@ -8,6 +8,7 @@ use App\Services\AuthService;
 use App\Services\CurrencyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
@@ -40,13 +41,16 @@ class AuthController extends Controller
     }
 
 
-    public function login(Request $request,CurrencyService $currencyService)
+    public function login(Request $request,CurrencyService $currencyService): Response
     {
-        $user = $this->authService->login($request);
+
         $request->validate([
-            'email'=>'required|string|email',
-            'password'=>'required|string'
+            'email'=>'required|email|max:255',
+            'password'=>'required|min:8|max:255',
         ]);
+
+        $user = $this->authService->login($request);
+
         if(!$user)
         {
             return response([
@@ -58,10 +62,12 @@ class AuthController extends Controller
 
         $currencyService->sendDollarRateNotification($user);
 
-        return response()->json([
+        return response([
             'message'=>$user->email_verified_at ? __('app.login_success') : __('app.login_success_verify'),
-            'User'=> new UserResource($user),
-            'Token' => $token
+            'result' => [
+                'User'=> new UserResource($user),
+                'Token' => $token
+                ]
 
         ]);
     }

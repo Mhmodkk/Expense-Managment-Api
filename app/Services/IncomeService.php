@@ -30,7 +30,7 @@ class IncomeService
 
     public function update(object $request, $id): Income
     {
-        $income = Income::where('id',$id)->where('user_id',Auth::id())->FirstOrFail();
+        $income = Income::where('id',$id)->where('user_id',Auth::id())->first();
 
         $income->update([
             'amount' => $request->amount ?? $income->amount,
@@ -47,7 +47,7 @@ class IncomeService
 
     public function delete( $id): bool
     {
-        $income = Income::where('id',$id)->where('user_id',Auth::id())->FirstorFail();
+        $income = Income::where('id',$id)->where('user_id',Auth::id())->first();
 
         $income->delete();
         return true;

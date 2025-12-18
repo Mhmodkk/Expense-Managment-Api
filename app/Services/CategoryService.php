@@ -22,7 +22,7 @@ class CategoryService
 
     public function update(object $request, $id): Category
     {
-        $category = Category::where('id',$id)->where('user_id',Auth::id())->firstOrFail();
+        $category = Category::where('id',$id)->where('user_id',Auth::id())->first();
 
         $category->update([
             'name' => $request->name ?? $category->name,
@@ -37,7 +37,7 @@ class CategoryService
 
     public function delete(int $id): bool
     {
-        $category = Category::where('id',$id)->where('user_id',Auth::id())->FirstorFail();
+        $category = Category::where('id',$id)->where('user_id',Auth::id())->first();
 
         $category->delete();
         return true;

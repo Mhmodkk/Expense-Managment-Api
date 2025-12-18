@@ -50,7 +50,7 @@ class ExpenseService
 
     public function update(object $request, $id): Expense
     {
-        $expense = Expense::where('id',$id)->where('user_id',Auth::id())->FirstOrFail();
+        $expense = Expense::where('id',$id)->where('user_id',Auth::id())->first();
 
         $expense->update([
             'amount' => $request->amount ?? $expense->amount,
@@ -68,7 +68,7 @@ class ExpenseService
 
     public function delete( $id): bool
     {
-        $expense = Expense::where('id',$id)->where('user_id',Auth::id())->FirstorFail();
+        $expense = Expense::where('id',$id)->where('user_id',Auth::id())->first();
 
         $expense->delete();
         return true;
