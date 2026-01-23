@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->uuid();
             $table->foreignId('currency_id')->constrained('currencies')->cascadeOnDelete();
-            $table->decimal('initial_balance', 15)->default(0);
-            $table->decimal('balance', 15)->default(0);
-            $table->decimal('monthly_limit', 12, 2)->default(0);
+            $table->decimal('initial_balance', 15)->nullable();
+            $table->decimal('balance', 15)->nullable();
+            $table->decimal('monthly_limit', 12, 2)->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
