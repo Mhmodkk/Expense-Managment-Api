@@ -65,6 +65,7 @@ class AuthController extends Controller
         return response([
             'message'=>$user->email_verified_at ? __('app.login_success') : __('app.login_success_verify'),
             'result' => [
+                'Balance' => $user->balance,
                 'User'=> new UserResource($user),
                 'Token' => $token
                 ]

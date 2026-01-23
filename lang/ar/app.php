@@ -34,6 +34,7 @@ return [
     'expense_deleted' => 'تم حذف المصروف بنجاح',
     'invalid_act_delete_expense' => 'أوووه! حدث خطأ أثناء حذف المصروف ):',
     'limit_set' => 'تم وضع الحد الشهري بنجاح',
+    'no_expenses_available' => 'لم يتم ايجاد نفقات',
     // المصروفات (Expenses) end.
 
 

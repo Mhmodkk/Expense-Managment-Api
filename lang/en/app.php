@@ -36,6 +36,8 @@ return [
     'expense_summary' => 'Expense Summary Retrieved Successfully',
     'no_expenses_available' => 'No expenses available',
     'limit_set' => 'Monthly limit set successfully',
+    'expense_analysis_retrieved' => 'Expense analysis retrieved successfully',
+    'error_occurred' => 'An error occurred',
     //expenses end.
 
     //categories start:
