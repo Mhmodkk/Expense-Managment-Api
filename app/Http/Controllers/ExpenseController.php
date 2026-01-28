@@ -141,38 +141,41 @@ class ExpenseController extends Controller
 
 
     public function filterByPeriod(Request $request)
-    {
-        $user_id = Auth::id();
-        $period = $request->query('period','day');
+{
+    $user = Auth::user();
+    $period = $request->query('period', 'day');
+    $service = app(\App\Services\CurrencyService::class);
 
-        $query = Expense::where('user_id',$user_id);
+    $query = Expense::where('user_id', $user->id)->with('currency');
 
-        switch ($period)
-        {
-            case 'day':
-                $query->whereDate('created_at',now());
-                break;
-
-            case 'week':
-                $query->whereBetween('created_at',[now()->startOfWeek(),now()->endOfWeek()]);
-                break;
-
-            case 'month':
-                $query->whereMonth('created_at',now()->month)->whereYear('created_at',now()->year);
-                break;
-
-            case 'year':
-                $query->whereYear('created_at',now()->year);
-                break;
-
-            default:
-                return response()->json(['message' => 'Invalid Period'],400);
-        }
-
-        $expenses = $query->latest()->get();
-        return response()->json([
-            'total_expense' => $expenses->sum('amount'),
-            'records' => $expenses
-        ]);
+    switch ($period) {
+        case 'day':
+            $query->whereDate('created_at', now());
+            break;
+        case 'week':
+            $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+            break;
+        case 'month':
+            $query->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year);
+            break;
+        case 'year':
+            $query->whereYear('created_at', now()->year);
+            break;
+        default:
+            return response()->json(['message' => 'Invalid Period'], 400);
     }
+
+    $expenses = $query->latest()->get();
+
+    $converted = $expenses->map(function ($expense) use ($service, $user) {
+        $expense->converted_amount = round($service->convert($expense->amount, $expense->currency_id, $user->currency_id), 2);
+        return $expense;
+    });
+
+    return response()->json([
+        'currency' => $user->currency->code,
+        'total_expense' => $converted->sum('converted_amount'),
+        'records' => $converted
+    ]);
+}
 }
