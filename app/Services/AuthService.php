@@ -115,13 +115,13 @@ class AuthService
         }
 
         //Update
-        $user->password = $request->password;
+        $user->password = Hash::make($request->password);
         $user->updated_at = Carbon::now();
-        $user->update();
+        $user->save();
 
         $otp->active = 0;
         $otp->updated_at = Carbon::now();
-        $otp->update();
+        $otp->save();
 
         return $user;
     }
