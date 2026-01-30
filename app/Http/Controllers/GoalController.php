@@ -33,12 +33,12 @@ class GoalController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'target_amount' => 'required|numeric|min:1',
+            'current_amount' => 'required|numeric|min:0',
             'due_date' => 'nullable|date',
             'note' => 'nullable|string'
         ]);
 
         $validated['user_id'] = Auth::id();
-        $validated['current_amount'] = 0;
         $validated['status'] = 'in_progress';
 
         $goal = Goal::create($validated);
