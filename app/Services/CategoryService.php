@@ -14,7 +14,7 @@ class CategoryService
             'user_id' => Auth::id(),
             'name' => $request->name,
             'icon' => $request->icon ?? null,
-            'type' => $request->type ?? 'expense',
+            'type' => $request->type ?? ['expense','income'],
         ]);
 
         return $category;

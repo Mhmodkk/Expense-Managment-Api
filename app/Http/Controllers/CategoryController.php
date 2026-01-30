@@ -34,7 +34,7 @@ class CategoryController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:cate$category,expense',
+            'type' => 'required|string|in:cate$category,expense,income',
             'icon' => 'nullable|string|max:255',
         ]);
 
