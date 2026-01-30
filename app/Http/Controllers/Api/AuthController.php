@@ -66,6 +66,7 @@ class AuthController extends Controller
             'message'=>$user->email_verified_at ? __('app.login_success') : __('app.login_success_verify'),
             'result' => [
                 'Balance' => $user->balance,
+                'monthly_limit' => $user->monthly_limit,
                 'User'=> new UserResource($user),
                 'Token' => $token
                 ]
