@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->uuid();
-            $table->foreignId('currency_id')->constrained('currencies')->cascadeOnDelete();
+            $table->foreignId('currency_id')->nullable()->constrained('currencies')->cascadeOnDelete();
             $table->decimal('initial_balance', 15)->nullable();
             $table->decimal('balance', 15)->nullable();
             $table->decimal('monthly_limit', 12, 2)->nullable();

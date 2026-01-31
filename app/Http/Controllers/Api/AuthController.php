@@ -18,7 +18,6 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-
     public function register(Request $request)
     {
        $request->validate([
@@ -26,7 +25,7 @@ class AuthController extends Controller
             'LastName'=>'required|string|max:255',
             'email'=>'required|string|email|max:255|unique:users|email',
             'password'=>'required|string|min:8',
-            'currency_id' => 'required|exists:currencies,id',
+
         ]);
 
         $user = $this->authService->register($request);
@@ -36,11 +35,8 @@ class AuthController extends Controller
             'message'=>__('app.registeration_success_verify'),
             'User'=>new UserResource($user),
             'Token' => $token
-
-        ],201);
-
+        ], 201);
     }
-
 
     public function me(Request $request)
     {
@@ -49,10 +45,8 @@ class AuthController extends Controller
         ], 200);
     }
 
-
-    public function login(Request $request,CurrencyService $currencyService): Response
+    public function login(Request $request, CurrencyService $currencyService): Response
     {
-
         $request->validate([
             'email'=>'required|email|max:255',
             'password'=>'required|min:8|max:255',
@@ -64,7 +58,7 @@ class AuthController extends Controller
         {
             return response([
                 'message'=>__('auth.failed')
-            ],401);
+            ], 401);
         }
 
         $token = $user->createToken('auth')->plainTextToken;
@@ -78,11 +72,9 @@ class AuthController extends Controller
                 'monthly_limit' => $user->monthly_limit,
                 'User'=> new UserResource($user),
                 'Token' => $token
-                ]
-
+            ]
         ]);
     }
-
 
     public function logout(Request $request)
     {
@@ -92,86 +84,64 @@ class AuthController extends Controller
         ]);
     }
 
-
     public function deleteAccount(Request $request)
-{
-    $user = $request->user();
-    $user->tokens()->delete();
+    {
+        $user = $request->user();
+        $user->tokens()->delete();
 
-    if ($user->otps()) {
-        $user->otps()->delete();
+        if ($user->otps()) {
+            $user->otps()->delete();
+        }
+
+        $user->delete();
+        return response()->json([
+            'message' => __('app.account_deleted_success'),
+        ]);
     }
 
-    $user->delete();
-    return response()->json([
-        'message' => __('app.account_deleted_success'),
-    ]);
-}
-
-
-        public function otp(Request $request)
+    public function otp(Request $request)
     {
-        //get user
         $user = Auth::user();
-
-        //generate otp
         $otp = $this->authService->otp($user);
-
 
         return response([
             'message'=> __('app.otp_sent_success')
-
         ]);
     }
 
-
-        public function verify(Request $request)
+    public function verify(Request $request)
     {
-        // validate the request
         $request->validate([
             'otp' => 'required|numeric'
         ]);
-        //get user
+
         $user = Auth::user();
-
-        //verify otp
-        $user = $this->authService->verify($user,$request);
-
+        $user = $this->authService->verify($user, $request);
 
         return response([
             'message'=> __('app.verification_success'),
             'result' => [
                 'user' => new UserResource($user)
             ]
-
         ]);
     }
 
-
     public function resetOtp(Request $request)
     {
-        //validate request
         $request->validate([
             'email' => 'required|email|max:255|exists:users,email'
         ]);
 
-        //get user
         $user = $this->authService->getUserByEmail($request->email);
-
-        //generate otp
-        $otp = $this->authService->otp($user,'password-reset');
-
+        $otp = $this->authService->otp($user, 'password-reset');
 
         return response([
             'message'=> __('app.otp_sent_success')
-
         ]);
     }
 
-
     public function resetPassword(Request $request): Response
     {
-        //validate request
         $request->validate([
             'otp' => 'required|numeric',
             'email' => 'required|email|max:255|exists:users,email',
@@ -179,12 +149,8 @@ class AuthController extends Controller
             'password_confirmation' => 'required|min:6|max:255'
         ]);
 
-        //get user
         $user = $this->authService->getUserByEmail($request->email);
-
-        //reset password
-        $user = $this->authService->resetPassword($user,$request);
-
+        $user = $this->authService->resetPassword($user, $request);
 
         return response([
             'message'=> __('app.password_reset_success'),
@@ -195,17 +161,26 @@ class AuthController extends Controller
     public function setInitialBalance(Request $request)
     {
         $request->validate([
-            'initial_balance' => 'nullable|numeric|min:0'
+            'initial_balance' => 'required|numeric|min:0',
+            'currency_id' => 'required|exists:currencies,id',
         ]);
 
         $user = Auth::user();
+
+        $user->currency_id = $request->currency_id;
         $user->initial_balance = $request->initial_balance;
         $user->balance = $request->initial_balance;
         $user->save();
 
+        $user->load('currency');
+
         return response()->json([
             'message' => __('app.balance_set'),
-            'balance' => $user->balance
+            'result' => [
+                'balance' => $user->balance,
+                'currency_id' => $user->currency_id,
+                'currency' => $user->currency // سيعيد كائن العملة (Name, Symbol, etc)
+            ]
         ]);
     }
 }

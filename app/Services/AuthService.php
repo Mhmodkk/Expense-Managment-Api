@@ -20,7 +20,7 @@ class AuthService
             'LastName' => $request->LastName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'currency_id' => $request->currency_id,
+            
         ]);
 
         //Send Verification Code

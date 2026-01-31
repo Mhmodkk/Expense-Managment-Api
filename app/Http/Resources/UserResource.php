@@ -16,7 +16,6 @@ class UserResource extends JsonResource
             'LastName' => $this->LastName,
             'email' => $this->email,
             'email_verified_at'=>$this->email_verified_at,
-            'currency'=>$this->currency,
             'Date' => $this->created_at->format('Y-m-d'),
         ];
     }
