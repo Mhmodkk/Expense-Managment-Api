@@ -24,6 +24,7 @@ return [
     'invalid_act_delete_income' => 'Opss! Something went wrong while deleting your income ): ',
     'incomes_listed' => 'These all your Incomes : ',
     'income_summary' => 'Expense Summary Retrieved Successfully',
+    'no_incomes_available' => 'No incomes available',
     //incomes end.
 
     //expenses start:

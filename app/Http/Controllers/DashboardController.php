@@ -103,10 +103,41 @@ class DashboardController extends Controller
             ->values();
 
         return response()->json([
-            'data' => $result
+            'data' => $result,
+            'balance' => Auth::user()->balance,
         ]);
     }
 
+
+    public function incomePercent()
+    {
+        $user_id = Auth::id();
+
+        $incomes = Income::where('user_id', $user_id)
+            ->with('category')
+            ->get();
+
+        $total = $incomes->sum('amount');
+
+        if ($total == 0) {
+            return response()->json([
+                'message' => __('app.no_incomes_available'),
+                'data' => []
+            ]);
+        }
+
+        $result = $incomes
+            ->groupBy(fn($e) => $e->category->name)
+            ->map(fn($group, $categoryName) => [
+            $categoryName . ' : ' . round(($group->sum('amount') / $total) * 100, 2) . '%'
+            ])
+            ->values();
+
+        return response()->json([
+            'data' => $result,
+            'balance' => Auth::user()->balance,
+        ]);
+    }
 
         public function checkMonthlyLimit()
     {

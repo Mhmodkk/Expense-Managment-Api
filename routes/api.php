@@ -21,6 +21,7 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('/verify', 'verify')->name('api.auth.verify');
         Route::post('/logout', 'logout')->name('api.auth.logout');
         Route::post('/set-initial-balance', 'setInitialBalance')->name('api.user.setInitialBalance');
+        Route::get('/me', 'me')->name('api.auth.me');
     });
 });
 
@@ -95,6 +96,7 @@ Route::middleware('auth:sanctum')->controller(DashboardController::class)->group
 
     Route::get('/dashboard', 'summary')->name('api.dashboard.summary');
     Route::get('/dashboard/expensePercent', 'expensePercent')->name('api.dashboard.expensePercent');
+    Route::get('/dashboard/incomePercent', 'incomePercent')->name('api.dashboard.incomePercent');
     Route::post('/dashboard/monthly-limit', 'setMonthlyLimit')->name('api.dashboard.setMonthlyLimit');
     Route::get('/dashboard/checkMonthlyLimit', 'checkMonthlyLimit')->name('api.dashboard.checkMonthlyLimit');
 

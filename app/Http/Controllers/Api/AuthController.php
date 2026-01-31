@@ -22,7 +22,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
        $request->validate([
-            'name'=>'required|string|max:255',
+            'FirstName'=>'required|string|max:255',
+            'LastName'=>'required|string|max:255',
             'email'=>'required|string|email|max:255|unique:users|email',
             'password'=>'required|string|min:8',
             'currency_id' => 'required|exists:currencies,id',
@@ -38,6 +39,14 @@ class AuthController extends Controller
 
         ],201);
 
+    }
+
+
+    public function me(Request $request)
+    {
+        return response()->json([
+            'User' => new UserResource($request->user())
+        ], 200);
     }
 
 

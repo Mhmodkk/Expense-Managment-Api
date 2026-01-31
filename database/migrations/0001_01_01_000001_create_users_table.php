@@ -18,7 +18,8 @@ return new class extends Migration
             $table->decimal('initial_balance', 15)->nullable();
             $table->decimal('balance', 15)->nullable();
             $table->decimal('monthly_limit', 12, 2)->nullable();
-            $table->string('name');
+            $table->string('FirstName');
+            $table->string('LastName');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
