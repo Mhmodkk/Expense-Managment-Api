@@ -14,6 +14,7 @@ return [
     'verification_success' => 'Verification  Successful',
     'password_reset_success' => 'Password Reset Successful',
     'balance_set' => 'Initial balance set successfully',
+    'account_deleted_success' => 'Account deleted successfully',
     //authintication end.
 
     //incomes start:

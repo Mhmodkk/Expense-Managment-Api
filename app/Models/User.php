@@ -39,4 +39,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Currency::class);
     }
+
+    public function otps()
+    {
+        return $this->hasMany(Otp::class);
+    }
 }

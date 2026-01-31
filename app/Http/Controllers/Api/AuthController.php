@@ -93,6 +93,22 @@ class AuthController extends Controller
     }
 
 
+    public function deleteAccount(Request $request)
+{
+    $user = $request->user();
+    $user->tokens()->delete();
+
+    if ($user->otps()) {
+        $user->otps()->delete();
+    }
+
+    $user->delete();
+    return response()->json([
+        'message' => __('app.account_deleted_success'),
+    ]);
+}
+
+
         public function otp(Request $request)
     {
         //get user

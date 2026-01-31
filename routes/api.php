@@ -22,6 +22,7 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('/logout', 'logout')->name('api.auth.logout');
         Route::post('/set-initial-balance', 'setInitialBalance')->name('api.user.setInitialBalance');
         Route::get('/me', 'me')->name('api.auth.me');
+        Route::delete('/delete-account', 'deleteAccount')->name('api.auth.deleteAccount');
     });
 });
 
