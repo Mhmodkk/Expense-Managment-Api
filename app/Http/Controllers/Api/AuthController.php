@@ -62,13 +62,16 @@ class AuthController extends Controller
             ], 401);
         }
         $token = $user->createToken('auth')->plainTextToken;
+
         if(!$user->email_verified_at)
         {
             return response([
                 'message'=>__('app.login_success_verify'),
                 'must_verify' => true,
-                'User'=> new UserResource($user),
-                'Token' => $token
+                'result' => [
+                    'User'=> new UserResource($user),
+                    'Token' => $token
+                ]
             ], 403);
         }
 
@@ -80,6 +83,7 @@ class AuthController extends Controller
                 'Balance' => $user->balance,
                 'monthly_limit' => $user->monthly_limit,
                 'User'=> new UserResource($user),
+                'Token' => $token
             ]
         ]);
     }
