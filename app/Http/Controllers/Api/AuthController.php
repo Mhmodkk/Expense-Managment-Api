@@ -29,12 +29,12 @@ class AuthController extends Controller
         ]);
 
         $user = $this->authService->register($request);
-        $token = $user->createToken('auth')->plainTextToken;
+
 
         return response()->json([
             'message'=>__('app.registeration_success_verify'),
             'User'=>new UserResource($user),
-            'Token' => $token
+
         ], 201);
     }
 
@@ -59,6 +59,15 @@ class AuthController extends Controller
             return response([
                 'message'=>__('auth.failed')
             ], 401);
+        }
+
+        if(!$user->email_verified_at)
+        {
+            return response([
+                'message'=>__('app.login_success_verify'),
+                'must_verify' => true,
+                'User'=> new UserResource($user)
+            ], 403);
         }
 
         $token = $user->createToken('auth')->plainTextToken;
@@ -117,11 +126,13 @@ class AuthController extends Controller
 
         $user = Auth::user();
         $user = $this->authService->verify($user, $request);
+        $token = $user->createToken('auth')->plainTextToken;
 
         return response([
             'message'=> __('app.verification_success'),
             'result' => [
                 'user' => new UserResource($user)
+                ,'Token' => $token
             ]
         ]);
     }
