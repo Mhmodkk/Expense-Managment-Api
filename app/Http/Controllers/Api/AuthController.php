@@ -71,6 +71,7 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('auth')->plainTextToken;
+        $token = $user->createToken('auth')->plainTextToken;
 
         $currencyService->sendDollarRateNotification($user);
 
