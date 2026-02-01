@@ -29,11 +29,12 @@ class AuthController extends Controller
         ]);
 
         $user = $this->authService->register($request);
-
+        $token = $user->createToken('auth')->plainTextToken;
 
         return response()->json([
             'message'=>__('app.registeration_success_verify'),
             'User'=>new UserResource($user),
+            'Token'=>$token
 
         ], 201);
     }
